@@ -1,27 +1,35 @@
-// LocalizedInput/LocalizedInput.tsx
-import React from 'react';
-import './LocalizedInput.scss';
+import React, {FC, InputHTMLAttributes, ReactElement} from 'react';
+import {IconButton} from '../IconButton/IconButton';
+import {FormFieldContainer} from '../FormFieldContainer/FormFieldContainer';
 
-interface LocalizedInputProps {
-  name: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholderKey?: string;
-  className?: string;
-  type?: string;
+export interface IProps
+    extends Omit<FormField, 'fieldType'>,
+        Omit<InputHTMLAttributes<HTMLInputElement>, 'className' | 'size'> {
+    icon?: ReactElement;
 }
 
-const LocalizedInput: React.FC<LocalizedInputProps> = ({ name, value, onChange, placeholderKey, className = '', type = 'text' }) => {
-  return (
-    <input
-      type={type}
-      name={name}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholderKey ? (placeholderKey) : ''}
-      className={`localized-input ${className}`}
-    />
-  );
-};
-
-export default LocalizedInput;
+export const LocalizedInput: FC<IProps> = React.forwardRef<HTMLInputElement, IProps>(
+    ({error, errorText, helpText, placeholder, isRequired, label, icon, size, className, ...props}, ref) => {
+        return (
+            <FormFieldContainer
+                fieldType="localized-input"
+                label={label}
+                errorText={errorText}
+                helpText={helpText}
+                isRequired={isRequired}
+                error={error}
+                size={size}
+                className={className}>
+                <div className="form-field">
+                    <input
+                        ref={ref}
+                        placeholder={placeholder}
+                        min={props.type === 'number' ? '1' : undefined}
+                        {...props}
+                    />
+                    {icon && <IconButton icon={icon} />}
+                </div>
+            </FormFieldContainer>
+        );
+    },
+);

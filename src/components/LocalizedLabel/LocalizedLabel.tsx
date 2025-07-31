@@ -1,19 +1,15 @@
-// LocalizedLabel/LocalizedLabel.tsx
 import React from 'react';
-import './LocalizedLabel.scss';
+import { LocalizedText } from '../LocalizedText/LocalizedText';
 
-interface LocalizedLabelProps {
-  label: string;
-  htmlFor?: string;
-  required?: boolean;
+interface Props extends LocalizedProps {
+    htmlFor?: string;
+    className?: string;
 }
 
-const LocalizedLabel: React.FC<LocalizedLabelProps> = ({ label, htmlFor, required }) => {
-  return (
-    <label className="localized-label" htmlFor={htmlFor}>
-      {label} {required && <span className="required">*</span>}
-    </label>
-  );
+export const LocalizedLabel: React.FC<Props> = ({htmlFor, ...props}) => {
+    return (
+        <label htmlFor={htmlFor}>
+            <LocalizedText {...props} />
+        </label>
+    );
 };
-
-export default LocalizedLabel;

@@ -1,20 +1,18 @@
-// BurgerMenu/BurgerMenu.tsx
-import React from 'react';
-import './BurgerMenu.scss';
+import classNames from 'classnames';
+import React, {FC} from 'react';
 
-interface BurgerMenuProps {
-  isOpen: boolean;
-  toggle: () => void;
+interface Props {
+    onClick?: () => void;
+    clicked?: boolean;
 }
-
-const BurgerMenu: React.FC<BurgerMenuProps> = ({ isOpen, toggle }) => {
-  return (
-    <button className={`burger-menu ${isOpen ? 'open' : ''}`} onClick={toggle}>
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  );
+export const BurgerMenu: FC<Props> = ({onClick, clicked}) => {
+    return (
+        <button className={classNames('burger-menu', clicked && 'cross')} onClick={onClick}>
+            <div className="burger-menu__icon">
+                <div className="burger-menu__icon__bar"></div>
+                <div className="burger-menu__icon__bar"></div>
+                <div className="burger-menu__icon__bar"></div>
+            </div>
+        </button>
+    );
 };
-
-export default BurgerMenu;

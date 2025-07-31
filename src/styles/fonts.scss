@@ -1,0 +1,58 @@
+
+$fontXXS: 14px;
+$fontXS: 16px;
+$fontSmall: 18px;
+$fontMedium: 20px;
+$fontLarge: 24px;
+$fontXL: 30px;
+$fontXXL: 36px;
+
+$fonts: (
+    'xxs': $fontXXS,
+    'xs': $fontXS,
+    'sm': $fontSmall,
+    'md': $fontMedium,
+    'lg': $fontLarge,
+    'xl': $fontXL,
+    'xxl': $fontXXL,
+);
+
+@each $fontName, $font in $fonts {
+    .font-#{$fontName} {
+        font-size: $font;
+        &-i {
+            font-size: $font !important;
+        }
+    }
+}
+//** kimppakyydit advertisement **
+$extraSmall: 14px; // will remove
+$small: 16px; // will remove
+$medium: 20px; // will remove
+$large: 32px;
+// **
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: $fontXS;
+}
+p {
+    font-size: $fontSmall;
+}
+
+h1,
+h2 {
+    font-size: $fontXXL;
+}
+h3 {
+    font-size: $fontLarge;
+}
+h4 {
+    font-size: $fontMedium;
+}
+h5 {
+    font-size: $fontSmall;
+}
+h6 {
+    font-size: $fontXS;
+}

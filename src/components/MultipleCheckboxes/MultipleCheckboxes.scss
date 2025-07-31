@@ -1,5 +1,9 @@
-// MultipleCheckboxes/MultipleCheckboxes.scss
-.multiple-checkboxes label {
-  display: block;
-  margin-bottom: 0.5rem;
+.multiple-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    @include max(sm) {
+        flex-direction: column;
+    }
 }

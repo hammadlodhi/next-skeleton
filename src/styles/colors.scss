@@ -1,0 +1,67 @@
+.app-layout {
+    --green: #34b771;
+    --green2: #1e9b58;
+    --orange: #e67d18;
+}
+
+$white: #ffffff;
+$black: #000000;
+$red: #ff0000;
+$gainsboro: #e7e7e7;
+$gray: #808080;
+$silverChalice: #a9a9a9;
+$jungleGreen: var(--green);
+$eucalyptus: var(--green2);
+$concrete: #f2f2f2;
+$zest: var(--orange);
+$oysterBay: #d2faff;
+$grey: #808080;
+$silver: #bdbdbd;
+$blue: #0000ff;
+$seaShell: #f1f1f1;
+$sazerac: #fff2e1;
+$rope: #8a4f17;
+$hotCinnamon: #d96e23;
+// kimppakyydit advertisement
+$orange: #ffa500;
+$limeGreen: #00bc3f;
+$selectiveYellow: #ffbb00;
+$darkCyan: #007eb6;
+$doveGray: #707070;
+$diSerria: #e0934a;
+$brandyPunch: #cd7f32;
+$cornflowerblue: #6495ed;
+$glodenGrass: #e0a322;
+
+$colors: (
+    rope: $rope,
+    hotCinnamon: $hotCinnamon,
+    jungleGreen: $jungleGreen,
+    zest: $zest,
+    diSerria: $diSerria,
+    brandyPunch: $brandyPunch,
+    black: $black,
+    red: $red,
+    goldenGrass: $glodenGrass
+);
+
+@each $colorName, $color in $colors {
+    .txt-#{$colorName} {
+        color: $color;
+        &-i {
+            color: $color !important;
+        }
+    }
+    .bg-#{$colorName} {
+        background-color: $color;
+        &-i {
+            background-color: $color !important;
+        }
+    }
+    .border-#{$colorName} {
+        border-color: $color;
+        &-i {
+            border-color: $color !important;
+        }
+    }
+}

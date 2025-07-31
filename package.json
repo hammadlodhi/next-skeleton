@@ -9,10 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.2.0",
+    "@mui/material": "^7.2.0",
+    "classnames": "^2.5.1",
     "next": "15.4.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "sass": "^1.89.2"
+    "react-hook-form": "^7.61.1",
+    "react-loader-spinner": "^6.1.6",
+    "react-time-picker-input": "^2.2.4",
+    "sass": "^1.89.2",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -1,20 +1,25 @@
-// IconButton/IconButton.tsx
-import React from 'react';
-import './IconButton.scss';
+import classNames from "classnames";
+import React from "react";
 
-interface IconButtonProps {
+export interface IconButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon: React.ReactNode;
-  onClick: () => void;
-  className?: string;
-  ariaLabel?: string;
 }
-
-const IconButton: React.FC<IconButtonProps> = ({ icon, onClick, className = '', ariaLabel }) => {
+export const IconButton: React.FC<IconButtonProps> = ({
+  icon,
+  type = "button",
+  title,
+  className,
+  ...props
+}) => {
   return (
-    <button className={`icon-button ${className}`} onClick={onClick} aria-label={ariaLabel}>
+    <button
+      className={classNames("icon-button", className)}
+      title={title && title}
+      type={type}
+      {...props}
+    >
       {icon}
     </button>
   );
 };
-
-export default IconButton;

@@ -1,15 +1,15 @@
-import React from 'react';
-import './Backdrop.scss';
+import React from "react";
+import classNames from "classnames";
 
-interface BackdropProps {
-  isVisible: boolean;
-  onClick: () => void;
-  className?: string;
+interface IProps {
+  active?: boolean;
+  children?: React.ReactNode;
 }
 
-const Backdrop: React.FC<BackdropProps> = ({ isVisible, onClick, className = '' }) => {
-  if (!isVisible) return null;
-  return <div className={`backdrop ${className}`} onClick={onClick} />;
+export const Backdrop: React.FC<IProps> = ({ active = false, children }) => {
+  return (
+    <div className={classNames("backdrop", { "backdrop--active": active })}>
+      {children}
+    </div>
+  );
 };
-
-export default Backdrop;

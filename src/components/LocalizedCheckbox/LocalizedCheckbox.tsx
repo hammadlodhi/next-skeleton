@@ -1,28 +1,22 @@
-// LocalizedCheckbox/LocalizedCheckbox.tsx
-import React from 'react';
-import './LocalizedCheckbox.scss';
+import React, {FC, JSX} from 'react';
+import {uuid} from 'uuidv4';
+import classNames from 'classnames';
+import { LocalizedLabel } from '../LocalizedLabel/LocalizedLabel';
 
-interface LocalizedCheckboxProps {
-  name: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  labelKey: string;
-  className?: string;
+interface IProps extends React.InputHTMLAttributes<HTMLInputElement>, LocalizedProps {
+    label: string;
+    options?: Option[];
 }
 
-const LocalizedCheckbox: React.FC<LocalizedCheckboxProps> = ({ name, checked, onChange, labelKey, className = '' }) => {
+export const LocalizedCheckbox: FC<IProps> = React.forwardRef<HTMLInputElement, IProps>(
+    ({label, components, className, ...props}, ref): JSX.Element => {
+        const id = uuid();
 
-  return (
-    <label className={`localized-checkbox ${className}`}>
-      <input
-        type="checkbox"
-        name={name}
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-      />
-      {(labelKey)}
-    </label>
-  );
-};
-
-export default LocalizedCheckbox;
+        return (
+            <div className={classNames(className, 'localized-checkbox')}>
+                <input ref={ref} id={id} type="checkbox" {...props} />
+                <LocalizedLabel htmlFor={id} label={label} components={components} />
+            </div>
+        );
+    },
+);

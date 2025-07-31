@@ -1,31 +1,52 @@
-// BurgerMenu/BurgerMenu.scss
 .burger-menu {
-  background: none;
-  border: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 30px;
-  height: 20px;
-  padding: 0;
-  cursor: pointer;
-}
+    @extend .icon-button;
+    padding: 0;
+    border-radius: $spacing;
+    margin: 0;
+    background: none;
+    border: none;
+    &__icon {
+        width: 15px;
+        height: 13px;
+        position: relative;
+        cursor: pointer;
+        &__bar {
+            position: absolute;
+            height: 1px;
+            width: 100%;
+            background: rgba($black, 0.8);
+            left: 0;
+            transition: all 0.2s ease-in-out;
+            &:first-child {
+                top: 0px;
+                transform-origin: left center;
+            }
 
-.burger-menu span {
-  height: 4px;
-  background: #333;
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
+            &:nth-child(2) {
+                top: 6px;
+                transform-origin: left center;
+            }
 
-.burger-menu.open span:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
-}
-
-.burger-menu.open span:nth-child(2) {
-  opacity: 0;
-}
-
-.burger-menu.open span:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+            &:last-child {
+                top: 12px;
+                transform-origin: left center;
+            }
+        }
+    }
+    &.cross .burger-menu__icon .burger-menu__icon__bar {
+        &:first-child {
+            transform: rotate(45deg);
+            top: 0px;
+            left: 0px;
+        }
+        &:nth-child(2) {
+            width: 0%;
+            opacity: 0;
+        }
+        &:last-child {
+            transform: rotate(-45deg);
+            top: 11px;
+            left: 0px;
+        }
+    }
 }

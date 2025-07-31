@@ -1,44 +1,52 @@
-// LocalizedTable/LocalizedTable.tsx
-import React from 'react';
-import './LocalizedTable.scss';
+import React from "react";
+import { LocalizedHeading } from "../LocalizedHeading/LocalizedHeading";
 
-interface Column {
-  key: string;
-  header: string; // ✅ updated from 'label' to 'header'
+type strOrNum = string | number | React.ReactElement;
+
+type IData = Record<string, strOrNum>;
+
+interface ITable {
+  columns?: Array<string>;
+  data?: Array<any>;
+  desc: string;
 }
 
-interface LocalizedTableProps {
-  columns: Column[];
-  data: Record<string, any>[];
-  emptyMessage?: string;
-}
+const kebabToCamel = (kebabCaseString: string): string =>
+  kebabCaseString.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 
-const LocalizedTable: React.FC<LocalizedTableProps> = ({
-  columns,
-  data,
-  emptyMessage = 'No data available'
-}) => {
+const Table: React.FC<ITable> = ({ columns, data, desc }) => {
+  const rows = data?.map((dataObject: IData, index: number) => ({
+    ...dataObject,
+    sno: index,
+  }));
+
   return (
-    <table className="localized-table">
-      <thead>
-        <tr>
-          {columns.map((col) => (
-            <th key={col.key}>{col.header}</th>
+    <table className="table">
+      <thead className="table__table-thead">
+        <tr className="table__table-row">
+          {columns?.map((title: string, index: number) => (
+            <th
+              key={index}
+              className={`${index !== 0 && "table__center"} table__th`}
+            >
+              {title.replaceAll("-", "_").toUpperCase()}
+            </th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {data.length === 0 ? (
-          <tr>
-            <td colSpan={columns.length} className="empty">
-              {emptyMessage}
-            </td>
-          </tr>
+        {rows?.length === 0 ? (
+          <LocalizedHeading t={desc} heading="h3" />
         ) : (
-          data.map((row, idx) => (
-            <tr key={idx}>
-              {columns.map((col) => (
-                <td key={col.key}>{row[col.key]}</td>
+          rows?.map((row: any) => (
+            <tr key={row.sno} className="table__table-row">
+              {columns?.map((columnTitle: string, index: number) => (
+                <td
+                  key={index}
+                  className={`${index !== 0 && "table__center"} table__td`}
+                >
+                  {row[kebabToCamel(columnTitle)]}
+                </td>
               ))}
             </tr>
           ))
@@ -48,4 +56,4 @@ const LocalizedTable: React.FC<LocalizedTableProps> = ({
   );
 };
 
-export default LocalizedTable;
+export default Table;

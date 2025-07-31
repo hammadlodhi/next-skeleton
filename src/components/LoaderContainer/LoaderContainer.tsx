@@ -1,19 +1,6 @@
-// LoaderContainer/LoaderContainer.tsx
-import React from 'react';
-import './LoaderContainer.scss';
+import React from "react";
+import { Loader } from "../Loader/Loader";
 
-interface LoaderContainerProps {
-  loading: boolean;
-  children: React.ReactNode;
-  spinner?: React.ReactNode;
-}
-
-const LoaderContainer: React.FC<LoaderContainerProps> = ({ loading, children, spinner }) => {
-  return (
-    <div className="loader-container">
-      {loading ? spinner || <div className="default-spinner">Loading...</div> : children}
-    </div>
-  );
+export const LoaderContainer: React.FC = () => {
+  return <Loader />;
 };
-
-export default LoaderContainer;

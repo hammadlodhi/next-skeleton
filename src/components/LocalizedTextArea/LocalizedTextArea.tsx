@@ -1,27 +1,38 @@
-// LocalizedTextArea/LocalizedTextArea.tsx
-import React from 'react';
-import './LocalizedTextArea.scss';
+import React, { FC, TextareaHTMLAttributes } from "react";
+import { FormFieldContainer } from "../FormFieldContainer/FormFieldContainer";
 
-interface LocalizedTextAreaProps {
-  name: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholderKey?: string;
-  className?: string;
-  rows?: number;
-}
+type Props = Omit<FormField, "fieldType"> &
+  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "className">;
 
-const LocalizedTextArea: React.FC<LocalizedTextAreaProps> = ({ name, value, onChange, placeholderKey, className = '', rows = 4 }) => {
-  return (
-    <textarea
-      name={name}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      placeholder={placeholderKey ? (placeholderKey) : ''}
-      rows={rows}
-      className={`localized-textarea ${className}`}
-    />
-  );
-};
-
-export default LocalizedTextArea;
+export const LocalizedTextArea: FC<Props> = React.forwardRef<
+  HTMLTextAreaElement,
+  Props
+>(
+  (
+    {
+      error,
+      errorText = "This field is required",
+      placeholder = "Enter text here",
+      isRequired,
+      label,
+      size,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <FormFieldContainer
+        fieldType="localized-textarea"
+        label={label}
+        errorText={errorText}
+        isRequired={isRequired}
+        error={error}
+        size={size}
+      >
+        <div className="form-field">
+          <textarea ref={ref} placeholder={placeholder} {...props} />
+        </div>
+      </FormFieldContainer>
+    );
+  }
+);

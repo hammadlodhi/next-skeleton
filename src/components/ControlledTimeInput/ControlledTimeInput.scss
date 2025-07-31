@@ -1,0 +1,26 @@
+.time-input {
+    .form-field {
+        * {
+            position: static;
+            height: auto !important;
+        }
+        .react-time-input-picker-wrapper {
+            border: none;
+            padding: 0;
+            margin: 0;
+            height: auto;
+            .react-time-input-picker {
+                position: static;
+            }
+            .inputWrapper__dropdown {
+                position: absolute;
+                top: 100%;
+                bottom: unset;
+                width: 100%;
+                max-height: 200px !important;
+                min-width: unset;
+                z-index: $mediumIndex;
+            }
+        }
+    }
+}

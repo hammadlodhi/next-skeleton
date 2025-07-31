@@ -1,26 +1,56 @@
-// Popup/Popup.tsx
-import React from 'react';
-import './Popup.scss';
+import classNames from "classnames";
+import React, { FC, useRef } from "react";
+import { Backdrop } from "../Backdrop/Backdrop";
+import { IconButton } from "../IconButton/IconButton";
+import { useKeyPress } from "<@>/hooks/useKeyPress";
+import { useOnClickOutside } from "<@>/hooks/useOnClickOutside";
+import { LocalizedHeading } from "../LocalizedHeading/LocalizedHeading";
+import CancelIcon from "@mui/icons-material/Cancel";
 
-export interface PopupProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
+interface IProps {
+  heading?: string;
+  onClose?: () => void;
+  theme?: "default" | "pointed" | "highlight";
+  showCloseIcon?: boolean;
+  className?: string;
+  clickOutside?: boolean;
+  children?: React.ReactNode;
 }
 
-const Popup: React.FC<PopupProps> = ({ isOpen, onClose, title, children }) => {
-  if (!isOpen) return null;
-
+export const Popup: FC<IProps> = ({
+  className,
+  heading,
+  onClose = null,
+  theme = "highlight",
+  showCloseIcon = true,
+  clickOutside = true,
+  children,
+}) => {
+  const ref = useRef(null);
+  useKeyPress("Escape", onClose);
+  useOnClickOutside(ref, (event) => {
+    if (clickOutside && onClose) {
+      onClose();
+    }
+  });
   return (
-    <div className="popup-backdrop">
-      <div className="popup-content">
-        {title && <div className="popup-title">{title}</div>}
-        <div className="popup-body">{children}</div>
-        <button className="popup-close" onClick={onClose}>X</button>
+    <Backdrop active={true}>
+      <div
+        className={classNames("popup", theme, className)}
+        onClick={(evt) => evt.stopPropagation()}
+      >
+        <div ref={ref} className="popup__container pd-4">
+          {heading && <LocalizedHeading heading="h3" t={heading} />}
+          {showCloseIcon && onClose && (
+            <IconButton
+              className="popup__close-button"
+              icon={<CancelIcon />}
+              onClick={onClose}
+            />
+          )}
+          {children}
+        </div>
       </div>
-    </div>
+    </Backdrop>
   );
 };
-
-export default Popup;

@@ -1,33 +1,34 @@
-// Dropdown/Dropdown.tsx
-import React from 'react';
-import './Dropdown.scss';
+import { useKeyPress } from '<@>/hooks/useKeyPress';
+import { useOnClickOutside } from '<@>/hooks/useOnClickOutside';
+import classNames from 'classnames';
+import React, { FC, ReactNode, useRef, useState } from 'react';
 
-interface DropdownOption {
-  label: string;
-  value: string;
-}
-
-interface DropdownProps {
-  options: DropdownOption[];
-  value: string;
-  onChange: (value: string) => void;
+interface IProps {
+  head: ReactNode;
+  menu: ReactNode;
   className?: string;
+  transition?: 'fade' | 'collapse';
+  toggle?: boolean;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ options, value, onChange, className = '' }) => {
+export const Dropdown: FC<IProps> = ({ head, menu, transition = 'fade', className = '', toggle = true }) => {
+  const [openMenu, setOpenMenu] = useState(false);
+  const ref = useRef<HTMLButtonElement>(null);
+
+  useOnClickOutside(ref, () => setOpenMenu(false));
+  useKeyPress('Escape', () => setOpenMenu(false));
+
   return (
-    <select
-      className={`dropdown ${className}`}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    >
-      {options.map((opt) => (
-        <option key={opt.value} value={opt.value}>
-          {opt.label}
-        </option>
-      ))}
-    </select>
+    <a className={classNames('dropdown', className, transition, { open: openMenu })}>
+      <button
+        className="dropdown__head"
+        type="button"
+        ref={ref}
+        onClick={() => setOpenMenu(toggle ? !openMenu : true)}>
+        {head}
+      </button>
+      <div className={classNames('dropdown__menu', { open: openMenu })}>{menu}</div>
+    </a>
   );
 };
 
-export default Dropdown;

@@ -1,47 +1,98 @@
-// LocalizedSelect/LocalizedSelect.tsx
-import React from 'react';
-import './LocalizedSelect.scss';
+import React, { FC, useState } from "react";
+import { Controller } from "react-hook-form";
+import classNames from "classnames";
+import { LocalizedButton } from "../LocalizedButton/LocalizedButton";
+import { FormFieldContainer } from "../FormFieldContainer/FormFieldContainer";
+import { Select } from "../Select/Select";
+import { LocalizedText } from "../LocalizedText/LocalizedText";
 
-interface Option {
-  value: string;
-  label: string; // ✅ changed from labelKey to label
+interface LocalizedSelectProps extends Omit<FormField, "fieldType"> {
+  onChange: (value: OptionValue) => void;
+  value?: OptionValue;
+  options: Option[] | undefined;
+  type?: "lang" | "orange" | "default";
+  placeholder?: string;
+  headText?: string; // optional value to show in place of the selected option label.
 }
 
-interface LocalizedSelectProps {
-  name: string;
-  label?: string;
-  value: string;
-  options: Option[];
-  onChange: (value: string) => void;
-  className?: string;
-}
-
-const LocalizedSelect: React.FC<LocalizedSelectProps> = ({
-  name,
-  label,
-  value,
+export const LocalizedSelect: React.FC<LocalizedSelectProps> = ({
   options,
   onChange,
-  className = ''
+  value,
+  label,
+  isRequired,
+  error,
+  size,
+  type = "default",
+  placeholder = "Select an option",
+  errorText = "This field is required",
+  headText,
+  className,
 }) => {
-  return (
-    <div className={`localized-select-wrapper ${className}`}>
-      {label && <label htmlFor={name} className="localized-select-label">{label}</label>}
-      <select
-        id={name}
-        name={name}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="localized-select"
-      >
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+  const selectedOption = options?.find((option) => option.value === value);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const head = (
+    <div className={classNames("form-field", !selectedOption && "placeholder")}>
+      <LocalizedText text={headText || selectedOption?.label || placeholder} />
+      <i className="filled-arrow down"></i>
     </div>
   );
+  const menu = (
+    <div className="localized-select__menu">
+      {options?.map((option, index) => (
+        <LocalizedButton
+          key={index}
+          t={option.label}
+          onClick={() => {
+            onChange(option.value);
+            setMenuOpen(false);
+          }}
+        />
+      ))}
+    </div>
+  );
+  return (
+    <FormFieldContainer
+      fieldType="localized-select"
+      label={label}
+      errorText={errorText}
+      isRequired={isRequired}
+      error={error}
+      size={size}
+      className={className}
+    >
+      <Select
+        className={classNames("select", type)}
+        head={head}
+        menu={menu}
+        transition="collapse"
+        menuOpen={menuOpen}
+        setMenu={(val: boolean) => setMenuOpen(val)}
+      />
+    </FormFieldContainer>
+  );
 };
-
-export default LocalizedSelect;
+interface IControlledSelect
+  extends Omit<LocalizedSelectProps, "value" | "onChange"> {
+  name: string;
+}
+export const ControlledSelect: FC<IControlledSelect> = ({
+  name,
+  isRequired,
+  ...props
+}) => {
+  return (
+    <Controller
+      name={name}
+      render={({ field: { value, onChange } }) => (
+        <LocalizedSelect
+          value={value}
+          onChange={onChange}
+          isRequired={isRequired}
+          {...props}
+        />
+      )}
+      rules={{ required: isRequired }}
+    />
+  );
+};

@@ -1,40 +1,70 @@
-// MultipleCheckboxes/MultipleCheckboxes.tsx
-import React from 'react';
-import './MultipleCheckboxes.scss';
+import React from "react";
+import { Controller } from "react-hook-form";
+import { FormFieldContainer } from "../FormFieldContainer/FormFieldContainer";
+import { LocalizedCheckbox } from "../LocalizedCheckbox/LocalizedCheckbox";
+import classNames from "classnames";
 
-interface Option {
-  label: string;
-  value: string;
-}
-
-interface MultipleCheckboxesProps {
+interface IMultipleCheckboxesProps extends Omit<FormField, "fieldType"> {
+  name: string;
   options: Option[];
-  selected: string[];
-  onChange: (selected: string[]) => void;
+  onChange: (val: string[]) => void;
+  values: string[];
+  optionClass?: string;
 }
 
-const MultipleCheckboxes: React.FC<MultipleCheckboxesProps> = ({ options, selected, onChange }) => {
-  const toggleOption = (value: string) => {
-    const updated = selected.includes(value)
-      ? selected.filter((v) => v !== value)
-      : [...selected, value];
-    onChange(updated);
+export const MultipleCheckboxes: React.FC<IMultipleCheckboxesProps> = ({
+  options,
+  label,
+  name,
+  values = [],
+  onChange,
+  className,
+  optionClass = "quarter",
+  ...props
+}) => {
+  const handleChange = (value: string) => {
+    if (values.includes(value)) {
+      const removedId = values.filter((val) => val !== value);
+      onChange(removedId);
+      return;
+    }
+    onChange([...values, value]);
   };
 
   return (
-    <div className="multiple-checkboxes">
-      {options.map((opt) => (
-        <label key={opt.value}>
-          <input
-            type="checkbox"
-            checked={selected.includes(opt.value)}
-            onChange={() => toggleOption(opt.value)}
+    <FormFieldContainer {...props} fieldType="checkboxes" label={label}>
+      <div className="multiple-checkboxes grid responsive">
+        {options.map((option, index) => (
+          <LocalizedCheckbox
+            checked={values.includes(option.value as string)}
+            key={index}
+            name={name}
+            onChange={() => handleChange(option.value as string)}
+            label={option.label}
+            className={classNames(className, optionClass)}
           />
-          {opt.label}
-        </label>
-      ))}
-    </div>
+        ))}
+      </div>
+    </FormFieldContainer>
   );
 };
 
-export default MultipleCheckboxes;
+export const ControlledMultipleCheckboxes: React.FC<
+  Omit<IMultipleCheckboxesProps, "onChange" | "values">
+> = ({ isRequired, name, options, ...props }) => {
+  return (
+    <Controller
+      name={name}
+      rules={{ required: isRequired }}
+      render={({ field: { onChange, value } }) => (
+        <MultipleCheckboxes
+          {...props}
+          options={options}
+          onChange={onChange}
+          name={name}
+          values={value}
+        />
+      )}
+    />
+  );
+};

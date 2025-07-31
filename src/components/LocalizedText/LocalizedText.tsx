@@ -1,14 +1,12 @@
-// LocalizedText/LocalizedText.tsx
-import React from 'react';
-import './LocalizedText.scss';
+import React from "react";
 
-interface LocalizedTextProps {
-  text: string;
-  className?: string;
-}
-
-const LocalizedText: React.FC<LocalizedTextProps> = ({ text, className = '' }) => {
-  return <span className={`localized-text ${className}`}>{(text)}</span>;
+const LocalizedText: React.FC<LocalizedProps & { className?: string }> = ({
+  t = "",
+  className = "",
+  title,
+  ...props
+}) => {
+  return <span className={className} title={title && title} {...props}></span>;
 };
 
-export default LocalizedText;
+export { LocalizedText };
