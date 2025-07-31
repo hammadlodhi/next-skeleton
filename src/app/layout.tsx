@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "../styles/main.scss";
 import { ClientWrapper } from "./ClientWrapper";
+import { ReduxProvider } from "../redux/ReduxProvider";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -17,15 +18,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body className={`${poppins.variable} layout-body`}>
-        <div className="layout-wrapper">
-          <ClientWrapper>{children}</ClientWrapper>
-        </div>
+        <ReduxProvider>
+          <div className="layout-wrapper">
+            <ClientWrapper>{children}</ClientWrapper>
+          </div>
+        </ReduxProvider>
       </body>
     </html>
   );
