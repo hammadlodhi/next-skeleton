@@ -6,7 +6,11 @@ const LocalizedText: React.FC<LocalizedProps & { className?: string }> = ({
   title,
   ...props
 }) => {
-  return <span className={className} title={title && title} {...props}></span>;
+  return (
+    <span className={className} title={title || t} {...props}>
+      {t || title}
+    </span>
+  );
 };
 
 export { LocalizedText };
