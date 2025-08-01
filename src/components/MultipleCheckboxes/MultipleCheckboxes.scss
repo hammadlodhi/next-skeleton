@@ -1,9 +1,0 @@
-.multiple-checkboxes {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
-    @include max(sm) {
-        flex-direction: column;
-    }
-}

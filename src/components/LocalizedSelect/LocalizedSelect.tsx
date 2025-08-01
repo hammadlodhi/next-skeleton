@@ -1,82 +1,69 @@
-import React, { FC, useState } from "react";
-import { Controller } from "react-hook-form";
-import classNames from "classnames";
-import { LocalizedButton } from "../LocalizedButton/LocalizedButton";
-import { FormFieldContainer } from "../FormFieldContainer/FormFieldContainer";
-import { Select } from "../Select/Select";
-import { LocalizedText } from "../LocalizedText/LocalizedText";
+import React, { FC } from 'react';
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+  SelectChangeEvent,
+} from '@mui/material';
+import { Controller } from 'react-hook-form';
+import { Option, OptionValue } from '../../types/shared';
 
-interface LocalizedSelectProps extends Omit<FormField, "fieldType"> {
-  onChange: (value: OptionValue) => void;
+interface LocalizedSelectProps {
+  label?: string;
   value?: OptionValue;
-  options: Option[] | undefined;
-  type?: "lang" | "orange" | "default";
+  onChange: (value: OptionValue) => void;
+  options?: Option[];
+  isRequired?: boolean;
+  error?: boolean;
+  errorText?: string;
+  size?: 'small' | 'medium';
   placeholder?: string;
-  headText?: string; // optional value to show in place of the selected option label.
+  className?: string;
 }
 
-export const LocalizedSelect: React.FC<LocalizedSelectProps> = ({
-  options,
-  onChange,
-  value,
+export const LocalizedSelect: FC<LocalizedSelectProps> = ({
   label,
+  value,
+  onChange,
+  options = [],
   isRequired,
   error,
-  size,
-  type = "default",
-  placeholder = "Select an option",
-  errorText = "This field is required",
-  headText,
+  errorText,
+  size = 'medium',
+  placeholder = 'Select an option',
   className,
 }) => {
-  const selectedOption = options?.find((option) => option.value === value);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const head = (
-    <div className={classNames("form-field", !selectedOption && "placeholder")}>
-      <LocalizedText text={headText || selectedOption?.label || placeholder} />
-      <i className="filled-arrow down"></i>
-    </div>
-  );
-  const menu = (
-    <div className="localized-select__menu">
-      {options?.map((option, index) => (
-        <LocalizedButton
-          key={index}
-          t={option.label}
-          onClick={() => {
-            onChange(option.value);
-            setMenuOpen(false);
-          }}
-        />
-      ))}
-    </div>
-  );
   return (
-    <FormFieldContainer
-      fieldType="localized-select"
-      label={label}
-      errorText={errorText}
-      isRequired={isRequired}
-      error={error}
-      size={size}
-      className={className}
-    >
+    <FormControl fullWidth required={isRequired} error={error} size={size} className={className}>
+      {label && <InputLabel>{label}</InputLabel>}
       <Select
-        className={classNames("select", type)}
-        head={head}
-        menu={menu}
-        transition="collapse"
-        menuOpen={menuOpen}
-        setMenu={(val: boolean) => setMenuOpen(val)}
-      />
-    </FormFieldContainer>
+        value={value ?? ''}
+        onChange={(e, child) => onChange((e.target as { value: OptionValue }).value)}
+        displayEmpty
+        label={label}
+      >
+        <MenuItem value="" disabled>
+          {placeholder}
+        </MenuItem>
+        {options.map((option, index) => (
+          <MenuItem key={index} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </Select>
+      {error && errorText && <FormHelperText>{errorText}</FormHelperText>}
+    </FormControl>
   );
 };
-interface IControlledSelect
-  extends Omit<LocalizedSelectProps, "value" | "onChange"> {
+
+interface ControlledSelectProps
+  extends Omit<LocalizedSelectProps, 'value' | 'onChange'> {
   name: string;
 }
-export const ControlledSelect: FC<IControlledSelect> = ({
+
+export const ControlledSelect: FC<ControlledSelectProps> = ({
   name,
   isRequired,
   ...props
@@ -84,15 +71,17 @@ export const ControlledSelect: FC<IControlledSelect> = ({
   return (
     <Controller
       name={name}
-      render={({ field: { value, onChange } }) => (
+      rules={{ required: isRequired }}
+      render={({ field: { value, onChange }, fieldState: { error } }) => (
         <LocalizedSelect
           value={value}
           onChange={onChange}
+          error={!!error}
+          errorText={error?.message}
           isRequired={isRequired}
           {...props}
         />
       )}
-      rules={{ required: isRequired }}
     />
   );
 };

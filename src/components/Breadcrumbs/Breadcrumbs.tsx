@@ -1,6 +1,7 @@
-// Breadcrumbs/Breadcrumbs.tsx
-import React from 'react';
-import './Breadcrumbs.scss';
+"use client";
+
+import React from "react";
+import { Breadcrumbs as MUIBreadcrumbs, Link, Typography, useTheme } from "@mui/material";
 
 interface Breadcrumb {
   label: string;
@@ -12,16 +13,42 @@ interface BreadcrumbsProps {
   className?: string;
 }
 
-const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' }) => {
+const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = "" }) => {
+  const theme = useTheme();
+
   return (
-    <nav className={`breadcrumbs ${className}`} aria-label="breadcrumb">
-      {items.map((item, index) => (
-        <span key={index} className="breadcrumb-item">
-          {item.href ? <a href={item.href}>{item.label}</a> : item.label}
-          {index < items.length - 1 && ' / '}
-        </span>
-      ))}
-    </nav>
+    <MUIBreadcrumbs
+      aria-label="breadcrumb"
+      className={className}
+      separator=" / "
+      sx={{
+        fontSize: "0.9rem",
+        color: theme.palette.text.secondary,
+        mb: 2,
+      }}
+    >
+      {items.map((item, index) =>
+        item.href ? (
+          <Link
+            key={index}
+            href={item.href}
+            underline="hover"
+            sx={{
+              color: theme.palette.primary.main,
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            {item.label}
+          </Link>
+        ) : (
+          <Typography key={index} color="text.primary">
+            {item.label}
+          </Typography>
+        )
+      )}
+    </MUIBreadcrumbs>
   );
 };
 

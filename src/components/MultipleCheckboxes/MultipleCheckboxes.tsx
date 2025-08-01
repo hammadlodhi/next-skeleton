@@ -1,70 +1,56 @@
 import React from "react";
+import { Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, FormHelperText } from "@mui/material";
 import { Controller } from "react-hook-form";
-import { FormFieldContainer } from "../FormFieldContainer/FormFieldContainer";
-import { LocalizedCheckbox } from "../LocalizedCheckbox/LocalizedCheckbox";
-import classNames from "classnames";
+import { Option } from "../../types/shared";
 
-interface IMultipleCheckboxesProps extends Omit<FormField, "fieldType"> {
+interface MultipleCheckboxesProps {
+  label?: string;
   name: string;
+  values: string[];
   options: Option[];
   onChange: (val: string[]) => void;
-  values: string[];
-  optionClass?: string;
+  error?: boolean;
+  errorText?: string;
+  isRequired?: boolean;
 }
 
-export const MultipleCheckboxes: React.FC<IMultipleCheckboxesProps> = ({
-  options,
+export const MultipleCheckboxes: React.FC<MultipleCheckboxesProps> = ({
   label,
   name,
   values = [],
+  options,
   onChange,
-  className,
-  optionClass = "quarter",
-  ...props
+  error,
+  errorText = "This field is required",
+  isRequired,
 }) => {
   const handleChange = (value: string) => {
     if (values.includes(value)) {
-      const removedId = values.filter((val) => val !== value);
-      onChange(removedId);
-      return;
+      onChange(values.filter((val) => val !== value));
+    } else {
+      onChange([...values, value]);
     }
-    onChange([...values, value]);
   };
 
   return (
-    <FormFieldContainer {...props} fieldType="checkboxes" label={label}>
-      <div className="multiple-checkboxes grid responsive">
+    <FormControl component="fieldset" error={!!error} required={isRequired} variant="standard">
+      {label && <FormLabel component="legend">{label}</FormLabel>}
+      <FormGroup row sx={{ gap: 2 }}>
         {options.map((option, index) => (
-          <LocalizedCheckbox
-            checked={values.includes(option.value as string)}
+          <FormControlLabel
             key={index}
-            name={name}
-            onChange={() => handleChange(option.value as string)}
+            control={
+              <Checkbox
+                checked={values.includes(option.value as string)}
+                onChange={() => handleChange(option.value as string)}
+                name={name}
+              />
+            }
             label={option.label}
-            className={classNames(className, optionClass)}
           />
         ))}
-      </div>
-    </FormFieldContainer>
-  );
-};
-
-export const ControlledMultipleCheckboxes: React.FC<
-  Omit<IMultipleCheckboxesProps, "onChange" | "values">
-> = ({ isRequired, name, options, ...props }) => {
-  return (
-    <Controller
-      name={name}
-      rules={{ required: isRequired }}
-      render={({ field: { onChange, value } }) => (
-        <MultipleCheckboxes
-          {...props}
-          options={options}
-          onChange={onChange}
-          name={name}
-          values={value}
-        />
-      )}
-    />
+      </FormGroup>
+      {error && <FormHelperText>{errorText}</FormHelperText>}
+    </FormControl>
   );
 };

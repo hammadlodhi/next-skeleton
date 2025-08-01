@@ -1,13 +1,20 @@
-import classNames from "classnames";
-import React, { FC, useRef } from "react";
-import { Backdrop } from "../Backdrop/Backdrop";
-import { IconButton } from "../IconButton/IconButton";
+// components/Popup/Popup.tsx
+"use client";
+
+import React, { useRef } from "react";
+import {
+  Box,
+  Typography,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
+import CancelIcon from "@mui/icons-material/Cancel";
 import { useKeyPress } from "<@>/hooks/useKeyPress";
 import { useOnClickOutside } from "<@>/hooks/useOnClickOutside";
-import { LocalizedHeading } from "../LocalizedHeading/LocalizedHeading";
-import CancelIcon from "@mui/icons-material/Cancel";
+import { Backdrop } from "../Backdrop/Backdrop";
 
-interface IProps {
+interface PopupProps {
   heading?: string;
   onClose?: () => void;
   theme?: "default" | "pointed" | "highlight";
@@ -17,40 +24,99 @@ interface IProps {
   children?: React.ReactNode;
 }
 
-export const Popup: FC<IProps> = ({
-  className,
+export const Popup: React.FC<PopupProps> = ({
   heading,
   onClose = null,
   theme = "highlight",
   showCloseIcon = true,
+  className,
   clickOutside = true,
   children,
 }) => {
   const ref = useRef(null);
+  const muiTheme = useTheme();
+  const isMobile = useMediaQuery(muiTheme.breakpoints.down("sm"));
+
   useKeyPress("Escape", onClose);
-  useOnClickOutside(ref, (event) => {
-    if (clickOutside && onClose) {
-      onClose();
-    }
+  useOnClickOutside(ref, () => {
+    if (clickOutside && onClose) onClose();
   });
+
   return (
     <Backdrop active={true}>
-      <div
-        className={classNames("popup", theme, className)}
-        onClick={(evt) => evt.stopPropagation()}
+      <Box
+        sx={{
+          position: "fixed",
+          left: 0,
+          bottom: 0,
+          width: "100vw",
+          height: isMobile ? "calc(100vh - 48px)" : "calc(100vh - 72px)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: muiTheme.zIndex.modal,
+        }}
       >
-        <div ref={ref} className="popup__container pd-4">
-          {heading && <LocalizedHeading heading="h3" t={heading} />}
+        <Box
+          ref={ref}
+          sx={{
+            overflow: "auto",
+            display: "flex",
+            flexDirection: "column",
+            maxWidth: "90%",
+            maxHeight: "90%",
+            width: "fit-content",
+            borderRadius: muiTheme.spacing(2),
+            backgroundColor: muiTheme.palette.background.paper,
+            boxShadow: muiTheme.shadows[5],
+            position: "relative",
+            cursor: "auto",
+            p: 4,
+          }}
+          className={className}
+        >
+          {heading && (
+            <Typography
+              variant="h6"
+              component="h3"
+              sx={{
+                fontWeight: "bold",
+                textTransform: "uppercase",
+                textAlign: "center",
+                letterSpacing: muiTheme.spacing(0.25),
+                color: muiTheme.palette.text.primary,
+                mb: isMobile ? 2.25 : 2,
+                mt: isMobile ? 1.75 : 0,
+                lineHeight: 1,
+              }}
+            >
+              {heading}
+            </Typography>
+          )}
+
           {showCloseIcon && onClose && (
             <IconButton
-              className="popup__close-button"
-              icon={<CancelIcon />}
               onClick={onClose}
-            />
+              sx={{
+                position: "absolute",
+                top: muiTheme.spacing(3),
+                right: muiTheme.spacing(4.5),
+                "& svg": {
+                  width: muiTheme.spacing(3),
+                  height: muiTheme.spacing(3),
+                  "& path": {
+                    fill: muiTheme.palette.grey[600],
+                  },
+                },
+              }}
+            >
+              <CancelIcon />
+            </IconButton>
           )}
+
           {children}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Backdrop>
   );
 };

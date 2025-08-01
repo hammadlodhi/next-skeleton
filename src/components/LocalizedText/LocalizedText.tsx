@@ -1,6 +1,6 @@
 import React from "react";
 
-const LocalizedText: React.FC<LocalizedProps & { className?: string }> = ({
+const LocalizedText: React.FC<LocalizedProps & { className?: string; sx?: any }> = ({
   t = "",
   className = "",
   title,

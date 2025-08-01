@@ -1,35 +1,37 @@
-import React, {FC, InputHTMLAttributes, ReactElement} from 'react';
-import {IconButton} from '../IconButton/IconButton';
-import {FormFieldContainer} from '../FormFieldContainer/FormFieldContainer';
+// fields/InputField.tsx
+import React, { FC } from "react";
+import { TextField } from "@mui/material";
+import { FormFieldContainer } from "../FormFieldContainer/FormFieldContainer";
 
-export interface IProps
-    extends Omit<FormField, 'fieldType'>,
-        Omit<InputHTMLAttributes<HTMLInputElement>, 'className' | 'size'> {
-    icon?: ReactElement;
+interface InputFieldProps extends FormField {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  type?: string;
+  name?: string;
 }
 
-export const LocalizedInput: FC<IProps> = React.forwardRef<HTMLInputElement, IProps>(
-    ({error, errorText, helpText, placeholder, isRequired, label, icon, size, className, ...props}, ref) => {
-        return (
-            <FormFieldContainer
-                fieldType="localized-input"
-                label={label}
-                errorText={errorText}
-                helpText={helpText}
-                isRequired={isRequired}
-                error={error}
-                size={size}
-                className={className}>
-                <div className="form-field">
-                    <input
-                        ref={ref}
-                        placeholder={placeholder}
-                        min={props.type === 'number' ? '1' : undefined}
-                        {...props}
-                    />
-                    {icon && <IconButton icon={icon} />}
-                </div>
-            </FormFieldContainer>
-        );
-    },
-);
+export const InputField: FC<InputFieldProps> = ({
+  value,
+  onChange,
+  type = "text",
+  name,
+  placeholder,
+  ...rest
+}) => {
+  return (
+    <FormFieldContainer {...rest}>
+      <TextField
+        fullWidth
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        variant="outlined"
+        error={!!rest.error}
+        size="small"
+      />
+    </FormFieldContainer>
+  );
+};

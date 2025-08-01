@@ -1,13 +1,10 @@
-import React, { FC, TextareaHTMLAttributes } from "react";
-import { FormFieldContainer } from "../FormFieldContainer/FormFieldContainer";
+import React, { forwardRef } from "react";
+import { TextField, TextFieldProps } from "@mui/material";
 
 type Props = Omit<FormField, "fieldType"> &
-  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "className">;
+  Omit<TextFieldProps, "variant" | "size">;
 
-export const LocalizedTextArea: FC<Props> = React.forwardRef<
-  HTMLTextAreaElement,
-  Props
->(
+export const LocalizedTextArea = forwardRef<HTMLTextAreaElement, Props>(
   (
     {
       error,
@@ -15,24 +12,25 @@ export const LocalizedTextArea: FC<Props> = React.forwardRef<
       placeholder = "Enter text here",
       isRequired,
       label,
-      size,
+      size = "small",
       ...props
     },
     ref
   ) => {
     return (
-      <FormFieldContainer
-        fieldType="localized-textarea"
+      <TextField
+        inputRef={ref}
+        multiline
+        minRows={4}
         label={label}
-        errorText={errorText}
-        isRequired={isRequired}
-        error={error}
-        size={size}
-      >
-        <div className="form-field">
-          <textarea ref={ref} placeholder={placeholder} {...props} />
-        </div>
-      </FormFieldContainer>
+        placeholder={placeholder}
+        error={!!error}
+        helperText={error ? errorText : ""}
+        required={isRequired}
+        size={size as "small" | "medium"}
+        fullWidth
+        {...props}
+      />
     );
   }
 );
